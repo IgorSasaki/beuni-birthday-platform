@@ -1,7 +1,14 @@
+@import 'animate.css';
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-beuni-orange: #ff6900;
+  --color-beuni-dark: #6d3332;
+  --color-beuni-gradient: linear-gradient(135deg, #ff6900 0%, #6d3332 100%);
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
