@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 import { Calendar } from 'lucide-react'
 import Link from 'next/link'
 
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -12,6 +11,8 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+
+import { Form } from '../Form'
 
 export const Container: React.FC = () => {
   return (
@@ -51,14 +52,7 @@ export const Container: React.FC = () => {
           </CardHeader>
 
           <CardContent>
-            <form className="space-y-4">
-              <Button
-                className="bg-beuni-orange hover:bg-beuni-orange/90 transition-all-smooth w-full cursor-pointer"
-                type="submit"
-              >
-                Entrar
-              </Button>
-            </form>
+            <Form />
 
             <article className="mt-6 text-center">
               <p className="text-sm text-gray-600">
