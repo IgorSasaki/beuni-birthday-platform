@@ -59,7 +59,7 @@ export const Container: React.FC = () => {
                 Não tem uma conta?{' '}
                 <Link
                   className="text-beuni-orange hover:text-beuni-orange/80 font-medium transition-colors"
-                  href="/register"
+                  href="/cadastro"
                 >
                   Cadastre-se aqui
                 </Link>
