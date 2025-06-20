@@ -1,7 +1,13 @@
-import { NextPage } from 'next'
+import { Metadata, NextPage } from 'next'
 import { PropsWithChildren } from 'react'
 
 import '@/styles/globals.css'
+
+export const metadata: Metadata = {
+  title: 'BeUni Aniversários - Gestão de Aniversariantes',
+  description:
+    'Sistema profissional para gestão de aniversariantes e brindes corporativos'
+}
 
 const RootLayout: NextPage<PropsWithChildren> = async ({ children }) => {
   return (
