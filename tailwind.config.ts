@@ -5,8 +5,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: 'var(--background)',
-        foreground: 'var(--foreground)'
+        'beuni-orange': '#ff6900',
+        'beuni-dark': '#6d3332',
+
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))'
       }
     }
   },
