@@ -1,42 +1,102 @@
 import { Eye, EyeOff } from 'lucide-react'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { formSchema } from './schema'
+import { SignUpFormData } from './types'
 
 export const Form: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<SignUpFormData>({
+    resolver: zodResolver(formSchema)
+  })
+
+  const onSubmit = async (data: SignUpFormData) => {
+    setIsLoading(true)
+
+    try {
+      console.log({ data })
+
+      toast.success('Conta criada com sucesso!', {
+        description: 'Bem-vindo ao sistema BeUni Aniversários'
+      })
+
+      router.push('/dashboard')
+    } catch (error) {
+      toast.error('Erro no cadastro', {
+        description:
+          error instanceof Error ? error.message : 'Erro ao criar conta'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
-    <form className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-2">
         <Label htmlFor="name">Nome completo</Label>
         <Input
-          className="transition-all-smooth focus-beuni"
+          className={cn(
+            'transition-all-smooth focus-beuni',
+            errors.name && 'border-red-500'
+          )}
           id="name"
           placeholder="Seu nome completo"
+          {...register('name')}
         />
+
+        {errors.name && (
+          <p className="text-sm text-red-500">{errors.name.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
-          className="transition-all-smooth focus-beuni"
+          className={cn(
+            'transition-all-smooth focus-beuni',
+            errors.email && 'border-red-500'
+          )}
           id="email"
           placeholder="seu@email.com"
+          type="email"
+          {...register('email')}
         />
+
+        {errors.email && (
+          <p className="text-sm text-red-500">{errors.email.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="password">Senha</Label>
         <div className="relative">
           <Input
-            className="transition-all-smooth focus-beuni pr-10"
+            className={cn(
+              'transition-all-smooth focus-beuni pr-10',
+              errors.password && 'border-red-500'
+            )}
             id="password"
             placeholder="Digite sua senha"
             type={showPassword ? 'text' : 'password'}
+            {...register('password')}
           />
 
           <Button
@@ -53,16 +113,25 @@ export const Form: React.FC = () => {
             )}
           </Button>
         </div>
+
+        {errors.password && (
+          <p className="text-sm text-red-500">{errors.password.message}</p>
+        )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="confirmPassword">Confirmar senha</Label>
+
         <div className="relative">
           <Input
-            className="transition-all-smooth focus-beuni pr-10"
+            className={cn(
+              'transition-all-smooth focus-beuni pr-10',
+              errors.confirmPassword && 'border-red-500'
+            )}
             id="confirmPassword"
             placeholder="Confirme sua senha"
             type={showConfirmPassword ? 'text' : 'password'}
+            {...register('confirmPassword')}
           />
 
           <Button
@@ -79,13 +148,20 @@ export const Form: React.FC = () => {
             )}
           </Button>
         </div>
+
+        {errors.confirmPassword && (
+          <p className="text-sm text-red-500">
+            {errors.confirmPassword.message}
+          </p>
+        )}
       </div>
 
       <Button
         className="bg-beuni-orange hover:bg-beuni-orange/90 transition-all-smooth w-full"
+        disabled={isLoading}
         type="submit"
       >
-        Criar conta
+        {isLoading ? 'Carregando...' : 'Cadastrar'}
       </Button>
     </form>
   )
