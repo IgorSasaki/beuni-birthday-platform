@@ -21,7 +21,7 @@ export const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      router.push('/login')
+      router.push('/acesso')
     } catch (error) {
       console.error('Logout failed:', error)
     }
