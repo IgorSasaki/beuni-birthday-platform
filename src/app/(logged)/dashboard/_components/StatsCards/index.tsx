@@ -1,38 +1,62 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 
 import { motion } from 'framer-motion'
 import { Calendar, Gift, TrendingUp, Users } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 import { Card, CardContent } from '@/components/ui/card'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { internalAPIInstance } from '@/instances/internalAPI'
+
+import { DashboardStats } from './types'
 
 export const StatsCards: React.FC = () => {
+  const [token, setValue] = useLocalStorage('auth_token', '')
+
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+
+  useEffect(() => {
+    internalAPIInstance.dashboard
+      .getDashboard(token)
+      .then(({ data }) => {
+        console.log({ data })
+
+        setStats(data)
+      })
+      .catch(error => {
+        console.error({ getDashboardError: error })
+      })
+  }, [token])
+
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {[
         {
           title: 'Total de Funcionários',
-          value: 0,
+          value: stats?.totalEmployees ?? 0,
           icon: Users,
           color: 'text-blue-600',
           bgColor: 'bg-blue-50'
         },
         {
           title: 'Aniversários este Mês',
-          value: 0,
+          value: stats?.birthdaysThisMonth.length ?? 0,
           icon: Calendar,
           color: 'text-beuni-orange',
           bgColor: 'bg-orange-50'
         },
         {
           title: 'Brindes Pendentes',
-          value: 0,
+          value: stats?.pendingGifts.length ?? 0,
           icon: Gift,
           color: 'text-yellow-600',
           bgColor: 'bg-yellow-50'
         },
         {
           title: 'Brindes Enviados',
-          value: 0,
+          value: stats?.sendingGifts.length ?? 0,
           icon: TrendingUp,
           color: 'text-green-600',
           bgColor: 'bg-green-50'
