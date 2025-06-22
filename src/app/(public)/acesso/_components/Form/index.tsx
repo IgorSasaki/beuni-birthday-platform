@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 
 import { Eye, EyeOff } from 'lucide-react'
@@ -9,16 +11,26 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { internalAPIInstance } from '@/instances/internalAPI'
 import { cn } from '@/lib/utils'
+import { User } from '@/models/User'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { formSchema } from './schema'
 import { LoginFormData } from './types'
 
 export const Form: React.FC = () => {
+  const router = useRouter()
+
+  const [token, setToken, removeToken] = useLocalStorage<string | null>(
+    'auth_token',
+    null
+  )
+  const [user, setUser, removeUser] = useLocalStorage<User | null>('user', null)
+
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const {
     register,
@@ -28,11 +40,17 @@ export const Form: React.FC = () => {
     resolver: zodResolver(formSchema)
   })
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (payload: LoginFormData) => {
     setIsLoading(true)
 
     try {
-      console.log({ data })
+      const { data } = await internalAPIInstance.auth.login(
+        payload.email,
+        payload.password
+      )
+
+      setToken(data.token)
+      setUser(data.user)
 
       toast.success('Login realizado com sucesso!', {
         description: 'Bem-vindo ao sistema BeUni Aniversários'
@@ -40,9 +58,10 @@ export const Form: React.FC = () => {
 
       router.push('/dashboard')
     } catch (error) {
+      console.error({ onsubmitError: error })
+
       toast.error('Erro no login', {
-        description:
-          error instanceof Error ? error.message : 'Credenciais inválidas'
+        description: 'Credenciais inválidas'
       })
     } finally {
       setIsLoading(false)
