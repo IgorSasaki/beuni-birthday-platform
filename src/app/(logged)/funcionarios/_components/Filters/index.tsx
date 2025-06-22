@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { DEPARTMENTS } from '@/constants/departments'
 
 import { MONTHS } from './data'
 import { BirthdayFilter } from './types'
@@ -20,8 +21,6 @@ import { BirthdayFilter } from './types'
 export const Filters: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<BirthdayFilter>({})
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
-  const [departments, setDepartments] = useState([])
 
   return (
     <motion.div
@@ -86,9 +85,9 @@ export const Filters: React.FC = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos os departamentos</SelectItem>
-                  {departments.map(dept => (
-                    <SelectItem key={dept} value={dept}>
-                      {dept}
+                  {DEPARTMENTS.map(dept => (
+                    <SelectItem key={dept.label} value={dept.value}>
+                      {dept.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
