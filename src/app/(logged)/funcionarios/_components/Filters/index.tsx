@@ -14,8 +14,8 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { DEPARTMENTS } from '@/constants/departments'
+import { MONTHS } from '@/constants/months'
 
-import { MONTHS } from './data'
 import { BirthdayFilter } from './types'
 
 export const Filters: React.FC = () => {
