@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 
 import { format } from 'date-fns'
@@ -5,6 +7,7 @@ import { ptBR } from 'date-fns/locale'
 import { motion } from 'framer-motion'
 import { Calendar, ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,35 +18,30 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { internalAPIInstance } from '@/instances/internalAPI'
+import { getGiftStatusColor } from '@/utils/helpers/getGiftStatusColor'
+import { getGiftStatusText } from '@/utils/helpers/getGiftStatusText'
+
+import { DashboardStats } from '../StatsCards/types'
 
 export const UpcomingBirthdays: React.FC = () => {
   const router = useRouter()
 
-  const getGiftStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'sent':
-        return 'bg-blue-100 text-blue-800'
-      case 'delivered':
-        return 'bg-green-100 text-green-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
+  const [token, setValue] = useLocalStorage('auth_token', '')
 
-  const getGiftStatusText = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'Pendente'
-      case 'sent':
-        return 'Enviado'
-      case 'delivered':
-        return 'Entregue'
-      default:
-        return 'Desconhecido'
-    }
-  }
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+
+  useEffect(() => {
+    internalAPIInstance.dashboard
+      .getDashboard(token)
+      .then(({ data }) => {
+        setStats(data)
+      })
+      .catch(error => {
+        console.error({ getDashboardError: error })
+      })
+  }, [token])
 
   return (
     <motion.div
@@ -74,27 +72,19 @@ export const UpcomingBirthdays: React.FC = () => {
         </CardHeader>
 
         <CardContent>
-          {[].length === 0 ? (
+          {stats?.birthdaysThisMonth.length === 0 ? (
             <div className="py-8 text-center text-gray-500">
               <Calendar className="mx-auto mb-4 h-12 w-12 text-gray-300" />
               <p>Nenhum aniversário próximo encontrado</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {[
-                {
-                  id: 1,
-                  fullName: 'João da Silva',
-                  position: 'Desenvolvedor Frontend',
-                  department: 'Tecnologia',
-                  birthDate: new Date('2023-10-15')
-                }
-              ].map((employee, index) => (
+              {stats?.birthdaysThisMonth.map((employee, index) => (
                 <motion.div
                   animate={{ opacity: 1, x: 0 }}
                   className="flex items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors hover:bg-gray-100"
                   initial={{ opacity: 0, x: -20 }}
-                  key={employee.id}
+                  key={employee.employeeId}
                   transition={{ delay: index * 0.1 }}
                 >
                   <div className="flex items-center space-x-4">
@@ -122,8 +112,8 @@ export const UpcomingBirthdays: React.FC = () => {
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <Badge className={getGiftStatusColor('pending')}>
-                      {getGiftStatusText('pending')}
+                    <Badge className={getGiftStatusColor('PENDING')}>
+                      {getGiftStatusText('PENDING')}
                     </Badge>
 
                     <Badge variant="outline">G</Badge>
