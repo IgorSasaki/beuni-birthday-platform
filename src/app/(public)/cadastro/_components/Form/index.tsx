@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable unused-imports/no-unused-vars */
+'use client'
+
 import { Eye, EyeOff } from 'lucide-react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -7,17 +11,27 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { internalAPIInstance } from '@/instances/internalAPI'
 import { cn } from '@/lib/utils'
+import { User } from '@/models/User'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { formSchema } from './schema'
 import { SignUpFormData } from './types'
 
 export const Form: React.FC = () => {
+  const router = useRouter()
+
+  const [token, setToken, removeToken] = useLocalStorage<string | null>(
+    'auth_token',
+    null
+  )
+  const [user, setUser, removeUser] = useLocalStorage<User | null>('user', null)
+
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const {
     register,
@@ -27,11 +41,19 @@ export const Form: React.FC = () => {
     resolver: zodResolver(formSchema)
   })
 
-  const onSubmit = async (data: SignUpFormData) => {
+  const onSubmit = async (payload: SignUpFormData) => {
     setIsLoading(true)
 
     try {
-      console.log({ data })
+      const { data } = await internalAPIInstance.auth.register(
+        payload.name,
+        payload.email,
+        payload.password,
+        payload.confirmPassword
+      )
+
+      setToken(data.token)
+      setUser(data.user)
 
       toast.success('Conta criada com sucesso!', {
         description: 'Bem-vindo ao sistema BeUni Aniversários'
@@ -39,9 +61,10 @@ export const Form: React.FC = () => {
 
       router.push('/dashboard')
     } catch (error) {
+      console.error({ onsubmitError: error })
+
       toast.error('Erro no cadastro', {
-        description:
-          error instanceof Error ? error.message : 'Erro ao criar conta'
+        description: 'Erro ao criar conta'
       })
     } finally {
       setIsLoading(false)
