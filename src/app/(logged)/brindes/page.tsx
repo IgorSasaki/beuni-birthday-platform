@@ -18,6 +18,7 @@ const Page: NextPage = () => {
 
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState<BirthdayFilter>({})
+  const [update, setUpdate] = useState(false)
 
   const [gifts, setGifts] = useState<Gift[]>([])
 
@@ -30,13 +31,13 @@ const Page: NextPage = () => {
       .catch(error => {
         console.error({ listGiftsError: error })
       })
-  }, [token, searchTerm, filters])
+  }, [token, searchTerm, filters, update])
 
   return (
     <div className="space-y-8">
       <Header />
 
-      <StatsCards />
+      <StatsCards gifts={gifts} />
 
       <Filters
         filters={filters}
@@ -45,7 +46,13 @@ const Page: NextPage = () => {
         setSearchTerm={setSearchTerm}
       />
 
-      <GiftsList filters={filters} gifts={gifts} searchTerm={searchTerm} />
+      <GiftsList
+        filters={filters}
+        gifts={gifts}
+        searchTerm={searchTerm}
+        setUpdate={setUpdate}
+        update={update}
+      />
     </div>
   )
 }

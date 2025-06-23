@@ -2,16 +2,32 @@
 
 import { motion } from 'framer-motion'
 import { CheckCircle, Clock, Truck } from 'lucide-react'
+import { useMemo } from 'react'
 
 import { Card, CardContent } from '@/components/ui/card'
 
-export const StatsCards: React.FC = () => {
+import { StatsCardsProps } from './types'
+
+export const StatsCards: React.FC<StatsCardsProps> = ({ gifts }) => {
+  const pendingGifts = useMemo(
+    () => gifts?.filter(item => item.status === 'PENDING').length ?? 0,
+    [gifts]
+  )
+  const sendGifts = useMemo(
+    () => gifts?.filter(item => item.status === 'SENT').length ?? 0,
+    [gifts]
+  )
+  const deliveredGifts = useMemo(
+    () => gifts?.filter(item => item.status === 'DELIVERED').length ?? 0,
+    [gifts]
+  )
+
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
       {[
         {
           title: 'Brindes Pendentes',
-          value: 0,
+          value: pendingGifts,
           icon: Clock,
           color: 'text-yellow-600',
           bgColor: 'bg-yellow-50',
@@ -19,7 +35,7 @@ export const StatsCards: React.FC = () => {
         },
         {
           title: 'Brindes Enviados',
-          value: 0,
+          value: sendGifts,
           icon: Truck,
           color: 'text-blue-600',
           bgColor: 'bg-blue-50',
@@ -27,7 +43,7 @@ export const StatsCards: React.FC = () => {
         },
         {
           title: 'Brindes Entregues',
-          value: 0,
+          value: deliveredGifts,
           icon: CheckCircle,
           color: 'text-green-600',
           bgColor: 'bg-green-50',
