@@ -9,61 +9,36 @@ import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { DEPARTMENTS } from '@/constants/departments'
+import { JOB_TITLE_BY_GROUP } from '@/constants/jobTitle'
+import { getGiftStatusColor } from '@/utils/helpers/getGiftStatusColor'
+import { getGiftStatusText } from '@/utils/helpers/getGiftStatusText'
 
-export const Employees: React.FC = () => {
+import { EmployeesProps } from './types'
+
+export const Employees: React.FC<EmployeesProps> = ({
+  employees,
+  filters,
+  searchTerm
+}) => {
   const router = useRouter()
 
-  const isLoading = false // Simulate loading state
-  const searchTerm = '' // Simulate search term
-  const filters = {} // Simulate filters
-  const filteredEmployees = [
-    // Simulated employee data
-    {
-      id: '1',
-      fullName: 'João da Silva',
-      position: 'Desenvolvedor',
-      department: 'TI',
-      giftStatus: 'pending',
-      giftSize: 'M',
-      birthDate: new Date('1990-05-15'),
-      address: { city: 'São Paulo', state: 'SP' }
-    },
-    {
-      id: '2',
-      fullName: 'Maria Oliveira',
-      position: 'Designer',
-      department: 'Marketing',
-      giftStatus: 'sent',
-      giftSize: 'S',
-      birthDate: new Date('1985-08-20'),
-      address: { city: 'Rio de Janeiro', state: 'RJ' }
-    }
-  ]
+  const getDepartmentLabel = (department: string) => {
+    const departmentData = DEPARTMENTS.find(dept => dept.value === department)
 
-  const getGiftStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'sent':
-        return 'bg-blue-100 text-blue-800 border-blue-200'
-      case 'delivered':
-        return 'bg-green-100 text-green-800 border-green-200'
-      default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
-    }
+    return departmentData?.label || department
   }
 
-  const getGiftStatusText = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'Pendente'
-      case 'sent':
-        return 'Enviado'
-      case 'delivered':
-        return 'Entregue'
-      default:
-        return 'Desconhecido'
+  const getPositionLabel = (position: string) => {
+    for (const group of JOB_TITLE_BY_GROUP) {
+      const match = group.items.find(
+        item => item.value.trim().toLowerCase() === position
+      )
+
+      if (match) return match.label
     }
+
+    return position
   }
 
   return (
@@ -76,15 +51,12 @@ export const Employees: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="text-beuni-orange h-5 w-5" />
-            Funcionários ({filteredEmployees.length})
+            Funcionários ({employees.length})
           </CardTitle>
         </CardHeader>
+
         <CardContent>
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              Carregando
-            </div>
-          ) : filteredEmployees.length === 0 ? (
+          {employees.length === 0 ? (
             <div className="py-12 text-center">
               <Users className="mx-auto mb-4 h-16 w-16 text-gray-300" />
               <h3 className="mb-2 text-lg font-semibold text-gray-900">
@@ -106,12 +78,12 @@ export const Employees: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
-              {filteredEmployees.map((employee, index) => (
+              {employees.map((employee, index) => (
                 <motion.div
                   animate={{ opacity: 1, y: 0 }}
                   className="group"
                   initial={{ opacity: 0, y: 20 }}
-                  key={employee.id}
+                  key={employee.employeeId}
                   transition={{ delay: index * 0.05 }}
                 >
                   <Card className="h-full transition-all duration-200 group-hover:shadow-lg hover:shadow-md">
@@ -130,14 +102,12 @@ export const Employees: React.FC = () => {
                               {employee.fullName}
                             </h4>
                             <p className="text-sm text-gray-600">
-                              {employee.position}
+                              {getPositionLabel(employee.position)}
                             </p>
                           </div>
                         </div>
-                        <Badge
-                          className={getGiftStatusColor(employee.giftStatus)}
-                        >
-                          {getGiftStatusText(employee.giftStatus)}
+                        <Badge className={getGiftStatusColor(employee.status)}>
+                          {getGiftStatusText(employee.status)}
                         </Badge>
                       </div>
 
@@ -151,7 +121,7 @@ export const Employees: React.FC = () => {
 
                         <div className="flex items-center text-sm text-gray-600">
                           <Users className="text-beuni-orange mr-2 h-4 w-4" />
-                          {employee.department}
+                          {getDepartmentLabel(employee.department)}
                         </div>
 
                         <div className="flex items-center text-sm text-gray-600">
@@ -163,12 +133,14 @@ export const Employees: React.FC = () => {
                       <div className="mt-4 border-t border-gray-100 pt-4">
                         <div className="flex items-center justify-between">
                           <span className="text-xs text-gray-500">
-                            {employee.address.city}, {employee.address.state}
+                            {employee.city}, {employee.state}
                           </span>
 
                           <Button
                             onClick={() =>
-                              router.push(`/funcionarios/${employee.id}`)
+                              router.push(
+                                `/funcionarios/${employee.employeeId}`
+                              )
                             }
                             className="hover:border-beuni-orange hover:text-beuni-orange opacity-0 transition-opacity group-hover:opacity-100 hover:bg-orange-50"
                             size="sm"
