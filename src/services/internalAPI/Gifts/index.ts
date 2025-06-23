@@ -37,4 +37,18 @@ export class Gifts {
       }
     })
   }
+
+  public async updateGiftStatus(giftId: string, status: string, token: string) {
+    return await this.instance.put(
+      `/gifts/${giftId}`,
+      {
+        status
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+  }
 }
