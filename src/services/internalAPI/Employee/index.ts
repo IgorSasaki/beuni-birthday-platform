@@ -1,5 +1,6 @@
 import { AxiosInstance, AxiosResponse } from 'axios'
 
+import { EmployeeFormData } from '@/app/(logged)/funcionarios/novo/_components/Form/types'
 import { BirthdayFilter } from '@/app/(logged)/funcionarios/types'
 
 export class Employee {
@@ -40,5 +41,16 @@ export class Employee {
 
   public async getEmployeeById(employeeId: string): Promise<AxiosResponse> {
     return this.instance.get(`/employees/${employeeId}`)
+  }
+
+  public async createEmployee(
+    payload: EmployeeFormData,
+    token: string
+  ): Promise<AxiosResponse> {
+    return this.instance.post('/employees', payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
   }
 }
