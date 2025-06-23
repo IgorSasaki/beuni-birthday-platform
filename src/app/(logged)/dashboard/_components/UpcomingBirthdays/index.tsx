@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 
 import { format } from 'date-fns'
@@ -7,7 +5,6 @@ import { ptBR } from 'date-fns/locale'
 import { motion } from 'framer-motion'
 import { Calendar, ChevronRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -18,30 +15,15 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { internalAPIInstance } from '@/instances/internalAPI'
 import { getGiftStatusColor } from '@/utils/helpers/getGiftStatusColor'
 import { getGiftStatusText } from '@/utils/helpers/getGiftStatusText'
 
-import { DashboardStats } from '../StatsCards/types'
+import { UpcomingBirthdaysProps } from './types'
 
-export const UpcomingBirthdays: React.FC = () => {
+export const UpcomingBirthdays: React.FC<UpcomingBirthdaysProps> = ({
+  stats
+}) => {
   const router = useRouter()
-
-  const [token, setValue] = useLocalStorage('auth_token', '')
-
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-
-  useEffect(() => {
-    internalAPIInstance.dashboard
-      .getDashboard(token)
-      .then(({ data }) => {
-        setStats(data)
-      })
-      .catch(error => {
-        console.error({ getDashboardError: error })
-      })
-  }, [token])
 
   return (
     <motion.div

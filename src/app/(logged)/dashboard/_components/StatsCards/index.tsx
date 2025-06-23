@@ -1,35 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 
 import { motion } from 'framer-motion'
 import { Calendar, Gift, TrendingUp, Users } from 'lucide-react'
-import { useEffect, useState } from 'react'
 
 import { Card, CardContent } from '@/components/ui/card'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { internalAPIInstance } from '@/instances/internalAPI'
 
-import { DashboardStats } from './types'
+import { StatsCardsProps } from './types'
 
-export const StatsCards: React.FC = () => {
-  const [token, setValue] = useLocalStorage('auth_token', '')
-
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-
-  useEffect(() => {
-    internalAPIInstance.dashboard
-      .getDashboard(token)
-      .then(({ data }) => {
-        console.log({ data })
-
-        setStats(data)
-      })
-      .catch(error => {
-        console.error({ getDashboardError: error })
-      })
-  }, [token])
-
+export const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
       {[

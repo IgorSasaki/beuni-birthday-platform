@@ -1,5 +1,5 @@
 import { DashboardStats } from '../../types'
 
-export interface StatsCardsProps {
+export interface UpcomingBirthdaysProps {
   stats: DashboardStats
 }
