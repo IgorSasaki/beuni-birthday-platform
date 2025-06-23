@@ -3,7 +3,7 @@ export const getGiftStatusText = (status: string) => {
     {
       NOT_REQUESTED: 'Não solicitado',
       PENDING: 'Pendente',
-      SENDING: 'Enviado',
+      SENT: 'Enviado',
       DELIVERED: 'Entregue'
     }[status] || 'Desconhecido'
   )
