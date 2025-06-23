@@ -9,10 +9,10 @@ import { useRouter } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { DEPARTMENTS } from '@/constants/departments'
-import { JOB_TITLE_BY_GROUP } from '@/constants/jobTitle'
-import { getGiftStatusColor } from '@/utils/helpers/getGiftStatusColor'
-import { getGiftStatusText } from '@/utils/helpers/getGiftStatusText'
+import { getDepartmentLabel } from '@/utils/getters/getDepartmentLabel'
+import { getGiftStatusColor } from '@/utils/getters/getGiftStatusColor'
+import { getGiftStatusText } from '@/utils/getters/getGiftStatusText'
+import { getPositionLabel } from '@/utils/getters/getPositionLabel'
 
 import { EmployeesProps } from './types'
 
@@ -22,24 +22,6 @@ export const Employees: React.FC<EmployeesProps> = ({
   searchTerm
 }) => {
   const router = useRouter()
-
-  const getDepartmentLabel = (department: string) => {
-    const departmentData = DEPARTMENTS.find(dept => dept.value === department)
-
-    return departmentData?.label || department
-  }
-
-  const getPositionLabel = (position: string) => {
-    for (const group of JOB_TITLE_BY_GROUP) {
-      const match = group.items.find(
-        item => item.value.trim().toLowerCase() === position
-      )
-
-      if (match) return match.label
-    }
-
-    return position
-  }
 
   return (
     <motion.div
