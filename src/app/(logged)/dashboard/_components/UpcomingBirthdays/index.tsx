@@ -15,8 +15,8 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { getGiftStatusColor } from '@/utils/helpers/getGiftStatusColor'
-import { getGiftStatusText } from '@/utils/helpers/getGiftStatusText'
+import { getGiftStatusColor } from '@/utils/getters/getGiftStatusColor'
+import { getGiftStatusText } from '@/utils/getters/getGiftStatusText'
 
 import { UpcomingBirthdaysProps } from './types'
 
