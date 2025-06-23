@@ -30,7 +30,9 @@ import {
 } from '@/components/ui/select'
 import { DEPARTMENTS } from '@/constants/departments'
 import { JOB_TITLE_BY_GROUP } from '@/constants/jobTitle'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { externalAPIInstance } from '@/instances/externalAPI'
+import { internalAPIInstance } from '@/instances/internalAPI'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -39,6 +41,8 @@ import { EmployeeFormData } from './types'
 
 export const Form: React.FC = () => {
   const router = useRouter()
+
+  const [token] = useLocalStorage('auth_token', '')
 
   const [isLoadingCep, setIsLoadingCep] = useState(false)
   const [birthDate, setBirthDate] = useState<Date | undefined>(undefined)
@@ -53,9 +57,12 @@ export const Form: React.FC = () => {
     resolver: zodResolver(formSchema)
   })
 
-  const onSubmit = async (data: EmployeeFormData) => {
+  const onSubmit = async (payload: EmployeeFormData) => {
     try {
-      console.log({ data })
+      const { data } = await internalAPIInstance.employee.createEmployee(
+        payload,
+        token
+      )
 
       toast.success('Funcionário cadastrado com sucesso!', {
         description: `${data.fullName} foi adicionado ao sistema`
@@ -63,9 +70,10 @@ export const Form: React.FC = () => {
 
       router.push('/funcionarios')
     } catch (error) {
+      console.error({ onSubmitError: error })
+
       toast.error('Erro ao cadastrar funcionário', {
-        description:
-          error instanceof Error ? error.message : 'Erro desconhecido'
+        description: 'Erro desconhecido'
       })
     }
   }
