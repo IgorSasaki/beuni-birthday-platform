@@ -20,21 +20,21 @@ export const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
         },
         {
           title: 'Aniversários este Mês',
-          value: stats?.birthdaysThisMonth.length ?? 0,
+          value: stats?.birthdaysThisMonth?.length ?? 0,
           icon: Calendar,
           color: 'text-beuni-orange',
           bgColor: 'bg-orange-50'
         },
         {
           title: 'Brindes Pendentes',
-          value: stats?.pendingGifts.length ?? 0,
+          value: stats?.pendingGifts?.length ?? 0,
           icon: Gift,
           color: 'text-yellow-600',
           bgColor: 'bg-yellow-50'
         },
         {
           title: 'Brindes Enviados',
-          value: stats?.sendingGifts.length ?? 0,
+          value: stats?.sendingGifts?.length ?? 0,
           icon: TrendingUp,
           color: 'text-green-600',
           bgColor: 'bg-green-50'

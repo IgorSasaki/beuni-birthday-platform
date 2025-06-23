@@ -5,11 +5,11 @@ import { Header } from './_components/Header'
 
 const Page: NextPage = async () => {
   return (
-    <div className="space-y-8">
+    <main className="space-y-8">
       <Header />
 
       <Form />
-    </div>
+    </main>
   )
 }
 

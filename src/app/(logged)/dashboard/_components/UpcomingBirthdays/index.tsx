@@ -54,14 +54,14 @@ export const UpcomingBirthdays: React.FC<UpcomingBirthdaysProps> = ({
         </CardHeader>
 
         <CardContent>
-          {stats?.birthdaysThisMonth.length === 0 ? (
+          {stats?.birthdaysThisMonth?.length === 0 ? (
             <div className="py-8 text-center text-gray-500">
               <Calendar className="mx-auto mb-4 h-12 w-12 text-gray-300" />
               <p>Nenhum aniversário próximo encontrado</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {stats?.birthdaysThisMonth.map((employee, index) => (
+              {stats?.birthdaysThisMonth?.map((employee, index) => (
                 <motion.div
                   animate={{ opacity: 1, x: 0 }}
                   className="flex items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors hover:bg-gray-100"
