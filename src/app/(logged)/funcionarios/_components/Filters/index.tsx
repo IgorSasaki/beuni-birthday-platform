@@ -2,25 +2,37 @@
 
 import { motion } from 'framer-motion'
 import { Search } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback } from 'react'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 import { DEPARTMENTS } from '@/constants/departments'
+import { GIFT_STATUS } from '@/constants/gifttStatus'
 import { MONTHS } from '@/constants/months'
 
-import { BirthdayFilter } from './types'
+import { FilterSelect } from './FilterSelect'
+import { FiltersProps } from './types'
 
-export const Filters: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filters, setFilters] = useState<BirthdayFilter>({})
+export const Filters: React.FC<FiltersProps> = ({
+  searchTerm,
+  setSearchTerm,
+  filters,
+  setFilters
+}) => {
+  const handleChange = useCallback(
+    (key: keyof typeof filters, value: string) => {
+      setFilters(prev => ({
+        ...prev,
+        [key]:
+          value === 'ALL'
+            ? undefined
+            : key === 'month'
+              ? parseInt(value, 10)
+              : value
+      }))
+    },
+    [setFilters]
+  )
 
   return (
     <motion.div
@@ -30,9 +42,9 @@ export const Filters: React.FC = () => {
     >
       <Card>
         <CardContent className="p-6">
-          <div className="flex flex-col gap-4 lg:flex-row">
+          <form className="flex flex-col gap-4 lg:flex-row">
             <div className="flex-1">
-              <form className="relative">
+              <div className="relative">
                 <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                 <Input
                   className="pl-10"
@@ -40,80 +52,44 @@ export const Filters: React.FC = () => {
                   placeholder="Buscar por nome, cargo ou departamento..."
                   value={searchTerm}
                 />
-              </form>
+              </div>
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row">
-              <Select
-                onValueChange={value =>
-                  setFilters(prev => ({
-                    ...prev,
-                    month: value === 'all' ? undefined : parseInt(value)
+              <FilterSelect
+                options={[
+                  { label: 'Todos os meses', value: 'ALL' },
+                  ...MONTHS.map(m => ({
+                    label: m.label,
+                    value: m.value.toString()
                   }))
-                }
-                value={filters.month?.toString() || 'all'}
-              >
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Filtrar por mês" />
-                </SelectTrigger>
+                ]}
+                label="Filtrar por mês"
+                onValueChange={value => handleChange('month', value)}
+                value={filters.month?.toString() || 'ALL'}
+              />
 
-                <SelectContent>
-                  <SelectItem value="all">Todos os meses</SelectItem>
+              <FilterSelect
+                options={[
+                  { label: 'Todos os departamentos', value: 'ALL' },
+                  ...DEPARTMENTS
+                ]}
+                label="Filtrar por departamento"
+                onValueChange={value => handleChange('department', value)}
+                value={filters.department || 'ALL'}
+              />
 
-                  {MONTHS.map(month => (
-                    <SelectItem
-                      key={month.value}
-                      value={month.value.toString()}
-                    >
-                      {month.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select
-                onValueChange={value =>
-                  setFilters(prev => ({
-                    ...prev,
-                    department: value === 'all' ? undefined : value
-                  }))
-                }
-                value={filters.department || 'all'}
-              >
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Filtrar por depto" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os departamentos</SelectItem>
-                  {DEPARTMENTS.map(dept => (
-                    <SelectItem key={dept.label} value={dept.value}>
-                      {dept.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select
-                onValueChange={value =>
-                  setFilters(prev => ({
-                    ...prev,
-                    giftStatus: value === 'all' ? undefined : (value as string)
-                  }))
-                }
-                value={filters.giftStatus || 'all'}
-              >
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Status do brinde" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os status</SelectItem>
-                  <SelectItem value="pending">Pendente</SelectItem>
-                  <SelectItem value="sent">Enviado</SelectItem>
-                  <SelectItem value="delivered">Entregue</SelectItem>
-                </SelectContent>
-              </Select>
+              <FilterSelect
+                options={[
+                  { label: 'Todos os status', value: 'ALL' },
+                  ...GIFT_STATUS
+                ]}
+                label="Status do brinde"
+                onValueChange={value => handleChange('status', value)}
+                value={filters.status || 'ALL'}
+              />
             </div>
-          </div>
+          </form>
         </CardContent>
       </Card>
     </motion.div>
