@@ -5,4 +5,6 @@ export interface GiftsListProps {
   filters: BirthdayFilter
   gifts: Gift[]
   searchTerm: string
+  setUpdate(update: boolean): void
+  update: boolean
 }

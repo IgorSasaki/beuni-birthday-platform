@@ -12,10 +12,14 @@ import {
   Truck,
   User
 } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { internalAPIInstance } from '@/instances/internalAPI'
+import { Employee } from '@/models/Employee'
 import { getDepartmentLabel } from '@/utils/getters/getDepartmentLabel'
 import { getGiftStatusColor } from '@/utils/getters/getGiftStatusColor'
 import { getGiftStatusText } from '@/utils/getters/getGiftStatusText'
@@ -26,8 +30,12 @@ import { GiftsListProps } from './types'
 export const GiftsList: React.FC<GiftsListProps> = ({
   gifts,
   filters,
-  searchTerm
+  searchTerm,
+  setUpdate,
+  update
 }) => {
+  const [token] = useLocalStorage('auth_token', '')
+
   const getGiftStatusIcon = (status: string) => {
     switch (status) {
       case 'NOT_REQUESTED':
@@ -62,10 +70,31 @@ export const GiftsList: React.FC<GiftsListProps> = ({
         return 'Marcar como Pendente'
       case 'PENDING':
         return 'Marcar como Enviado'
-      case 'SEND':
+      case 'SENT':
         return 'Marcar como Entregue'
       default:
         return ''
+    }
+  }
+
+  const handleStatusUpdate = async (
+    giftId: string,
+    newStatus: Employee['status']
+  ) => {
+    try {
+      await internalAPIInstance.gifts.updateGiftStatus(giftId, newStatus, token)
+
+      setUpdate(!update)
+
+      toast.success('Status atualizado', {
+        description: `Status do brinde alterado para ${getGiftStatusText(newStatus)}`
+      })
+    } catch (error) {
+      console.error({ handleStatusUpdateError: error })
+
+      toast.error('Erro ao atualizar status', {
+        description: 'Não foi possível atualizar o status do brinde'
+      })
     }
   }
 
@@ -181,6 +210,12 @@ export const GiftsList: React.FC<GiftsListProps> = ({
                               {nextStatus && (
                                 <div className="mt-4 border-t border-gray-100 pt-4">
                                   <Button
+                                    onClick={() =>
+                                      handleStatusUpdate(
+                                        gift.giftId,
+                                        nextStatus
+                                      )
+                                    }
                                     className="bg-beuni-orange hover:bg-beuni-orange/90"
                                     size="sm"
                                   >
