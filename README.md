@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎉 BeUni Aniversários – Plataforma Frontend
 
-## Getting Started
+> Gestão inteligente de aniversariantes e envio de brindes personalizados para empresas.
 
-First, run the development server:
+---
+
+## 📌 Sumário
+
+- [🎉 BeUni Aniversários – Plataforma Frontend](#-beuni-aniversários--plataforma-frontend)
+  - [📌 Sumário](#-sumário)
+  - [📸 Visão Geral](#-visão-geral)
+  - [🚀 Tecnologias Utilizadas](#-tecnologias-utilizadas)
+  - [📂 Estrutura de Pastas](#-estrutura-de-pastas)
+  - [🧰 Funcionalidades](#-funcionalidades)
+  - [🔐 Autenticação](#-autenticação)
+  - [🔗 Integração com API](#-integração-com-api)
+  - [🧪 Qualidade e Boas Práticas](#-qualidade-e-boas-práticas)
+  - [🛠️ Scripts Disponíveis](#️-scripts-disponíveis)
+  - [�‍💻 Autor](#-autor)
+
+---
+
+## 📸 Visão Geral
+
+BeUni Aniversários é um sistema web responsivo para empresas organizarem aniversários de colaboradores e enviarem brindes personalizados. Ele possui autenticação, dashboard interativo, filtros inteligentes e painéis de gestão de funcionários e brindes.
+
+---
+
+## 🚀 Tecnologias Utilizadas
+
+| Categoria                    | Tecnologias                               |
+| ---------------------------- | ----------------------------------------- |
+| **Framework**                | Next.js 15.3.4 (App Router com Turbopack) |
+| **Linguagem**                | TypeScript 5.x                            |
+| **UI e Estilo**              | TailwindCSS 4, animate.css, shadcn/ui     |
+| **Formulários e Validações** | React Hook Form, Zod                      |
+| **Autenticação**             | JWT via localStorage + interceptors       |
+| **UX**                       | Framer Motion, Sonner (toasts)            |
+| **API HTTP**                 | Axios                                     |
+| **Code Quality**             | ESLint + Prettier + Husky + Lint-staged   |
+| **Git Workflow**             | Commitizen + Conventional Commits         |
+
+---
+
+## 📂 Estrutura de Pastas
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+src/
+├── app/
+│   ├── (logged)/           # Áreas autenticadas
+│   │   ├── dashboard/
+│   │   ├── brindes/
+│   │   └── funcionarios/
+│   └── (public)/           # Acesso e cadastro
+├── components/
+│   ├── ui/
+│   └── structure/
+├── constants/
+├── hooks/
+├── instances/
+├── lib/
+├── models/
+├── services/
+│   └── internalAPI/
+│       ├── Auth/
+│       ├── Dashboard/
+│       ├── Employee/
+│       └── Gifts/
+├── styles/
+└── utils/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧰 Funcionalidades
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 🔐 Login seguro com JWT
+- 👤 Cadastro de usuários
+- 🎂 Cadastro de funcionários com preenchimento automático de endereço
+- 📊 Dashboard com métricas
+- 🎁 Gestão de status de brindes
+- 🔎 Filtros por mês, departamento, status e texto
+- 📱 Layout responsivo com animações
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🔐 Autenticação
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- JWT persistido em localStorage
+- Axios com interceptor automático para autenticação
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🔗 Integração com API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```ts
+internalAPIInstance.employee.getAllEmployees(token, searchTerm, filters)
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🧪 Qualidade e Boas Práticas
+
+- ESLint v9 com regras modernas
+- Prettier com Tailwind plugin
+- Husky + Lint-Staged + Commitizen
+- Plugins para ordenação e limpeza de imports
+
+---
+
+## 🛠️ Scripts Disponíveis
+
+```bash
+pnpm dev       # Desenvolvimento com Turbopack
+pnpm build     # Build de produção
+pnpm start     # Servidor
+pnpm lint      # Lint do projeto
+pnpm commit    # Commit semântico
+```
+
+---
+
+## 👨‍💻 Autor
+
+**Igor Sasaki**
+Desenvolvedor Full Stack | Tech Lead | Mentor
+[LinkedIn](https://www.linkedin.com/in/igorsasaki) • [GitHub](https://github.com/IgorSasaki)
