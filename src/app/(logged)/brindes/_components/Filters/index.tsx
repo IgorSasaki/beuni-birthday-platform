@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Search } from 'lucide-react'
 import { useCallback } from 'react'
 
+import { BirthdayFilter } from '@/app/(logged)/funcionarios/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { DEPARTMENTS } from '@/constants/departments'
@@ -20,7 +21,7 @@ export const Filters: React.FC<FiltersProps> = ({
   setFilters
 }) => {
   const handleChange = useCallback(
-    (key: keyof typeof filters, value: string) => {
+    <K extends keyof BirthdayFilter>(key: K, value: string) => {
       setFilters(prev => ({
         ...prev,
         [key]:

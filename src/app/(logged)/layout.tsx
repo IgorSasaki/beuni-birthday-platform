@@ -2,7 +2,7 @@
 
 import { NextPage } from 'next'
 import { useRouter } from 'next/navigation'
-import { PropsWithChildren, useEffect } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
 
 import { Header } from '@/components/structure/Header'
 import { Sidebar } from '@/components/structure/Sidebar'
@@ -10,14 +10,23 @@ import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 const LoggedLayout: NextPage<PropsWithChildren> = ({ children }) => {
   const router = useRouter()
-
   const [token] = useLocalStorage<string>('auth_token', '')
 
+  const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
-    if (!token) {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && !token) {
       router.push('/acesso')
     }
-  }, [token])
+  }, [token, mounted, router])
+
+  if (!mounted) {
+    return
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -10,6 +10,7 @@ import { DEPARTMENTS } from '@/constants/departments'
 import { GIFT_STATUS } from '@/constants/gifttStatus'
 import { MONTHS } from '@/constants/months'
 
+import { BirthdayFilter } from '../../types'
 import { FilterSelect } from './FilterSelect'
 import { FiltersProps } from './types'
 
@@ -20,7 +21,7 @@ export const Filters: React.FC<FiltersProps> = ({
   setFilters
 }) => {
   const handleChange = useCallback(
-    (key: keyof typeof filters, value: string) => {
+    <K extends keyof BirthdayFilter>(key: K, value: string) => {
       setFilters(prev => ({
         ...prev,
         [key]:
