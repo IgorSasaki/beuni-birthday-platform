@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable unused-imports/no-unused-vars */
 'use client'
 
 import { motion } from 'framer-motion'
@@ -15,12 +17,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { User } from '@/models/User'
 
 export const Header: React.FC = () => {
   const router = useRouter()
 
+  const [token, setToken, removeToken] = useLocalStorage<string>(
+    'auth_token',
+    ''
+  )
+  const [user, setUser, removeUser] = useLocalStorage<User | null>('user', null)
+
   const handleLogout = async () => {
     try {
+      removeToken()
+      removeUser()
+
       router.push('/acesso')
     } catch (error) {
       console.error('Logout failed:', error)
@@ -74,7 +87,7 @@ export const Header: React.FC = () => {
               <Button className="relative h-8 w-8 rounded-full" variant="ghost">
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-beuni-orange text-white">
-                    {getInitials('Igor Sasaki')}
+                    {getInitials(user?.name ?? '')}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -84,11 +97,11 @@ export const Header: React.FC = () => {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm leading-none font-medium">
-                    Igor Sasaki
+                    {user?.name}
                   </p>
 
                   <p className="text-muted-foreground text-xs leading-none">
-                    igor-sasaki@hotmail.com
+                    {user?.email}
                   </p>
                 </div>
               </DropdownMenuLabel>
