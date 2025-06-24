@@ -39,8 +39,15 @@ export class Employee {
     })
   }
 
-  public async getEmployeeById(employeeId: string): Promise<AxiosResponse> {
-    return this.instance.get(`/employees/${employeeId}`)
+  public async getEmployeeById(
+    employeeId: string,
+    token: string
+  ): Promise<AxiosResponse> {
+    return this.instance.get(`/employees/${employeeId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
   }
 
   public async createEmployee(
