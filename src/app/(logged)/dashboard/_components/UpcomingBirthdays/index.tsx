@@ -15,8 +15,10 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import { getDepartmentLabel } from '@/utils/getters/getDepartmentLabel'
 import { getGiftStatusColor } from '@/utils/getters/getGiftStatusColor'
 import { getGiftStatusText } from '@/utils/getters/getGiftStatusText'
+import { getPositionLabel } from '@/utils/getters/getPositionLabel'
 
 import { UpcomingBirthdaysProps } from './types'
 
@@ -83,7 +85,8 @@ export const UpcomingBirthdays: React.FC<UpcomingBirthdaysProps> = ({
                         {employee.fullName}
                       </h4>
                       <p className="text-sm text-gray-600">
-                        {employee.position} • {employee.department}
+                        {getPositionLabel(employee.position)} •{' '}
+                        {getDepartmentLabel(employee.department)}
                       </p>
                       <p className="text-beuni-orange text-sm font-medium">
                         {format(employee.birthDate, "dd 'de' MMMM", {
@@ -94,8 +97,8 @@ export const UpcomingBirthdays: React.FC<UpcomingBirthdaysProps> = ({
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <Badge className={getGiftStatusColor('PENDING')}>
-                      {getGiftStatusText('PENDING')}
+                    <Badge className={getGiftStatusColor(employee.status)}>
+                      {getGiftStatusText(employee.status)}
                     </Badge>
 
                     <Badge variant="outline">G</Badge>
