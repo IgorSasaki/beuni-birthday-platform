@@ -2,16 +2,7 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { motion } from 'framer-motion'
-import {
-  Calendar,
-  CheckCircle,
-  Clock,
-  Gift,
-  MapPin,
-  Package,
-  Truck,
-  User
-} from 'lucide-react'
+import { Calendar, Gift, MapPin, User } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
@@ -22,7 +13,10 @@ import { internalAPIInstance } from '@/instances/internalAPI'
 import { Employee } from '@/models/Employee'
 import { getDepartmentLabel } from '@/utils/getters/getDepartmentLabel'
 import { getGiftStatusColor } from '@/utils/getters/getGiftStatusColor'
+import { getGiftStatusIcon } from '@/utils/getters/getGiftStatusIcon'
 import { getGiftStatusText } from '@/utils/getters/getGiftStatusText'
+import { getNextStatus } from '@/utils/getters/getNextStatus'
+import { getNextStatusText } from '@/utils/getters/getNextStatusText'
 import { getPositionLabel } from '@/utils/getters/getPositionLabel'
 
 import { GiftsListProps } from './types'
@@ -35,47 +29,6 @@ export const GiftsList: React.FC<GiftsListProps> = ({
   update
 }) => {
   const [token] = useLocalStorage('auth_token', '')
-
-  const getGiftStatusIcon = (status: string) => {
-    switch (status) {
-      case 'NOT_REQUESTED':
-        return Package
-      case 'PENDING':
-        return Clock
-      case 'SENT':
-        return Truck
-      case 'DELIVERED':
-        return CheckCircle
-      default:
-        return Package
-    }
-  }
-
-  const getNextStatus = (currentStatus: string): string | null => {
-    switch (currentStatus) {
-      case 'NOT_REQUESTED':
-        return 'PENDING'
-      case 'PENDING':
-        return 'SENT'
-      case 'SENT':
-        return 'DELIVERED'
-      default:
-        return null
-    }
-  }
-
-  const getNextStatusText = (currentStatus: string): string => {
-    switch (currentStatus) {
-      case 'NOT_REQUESTED':
-        return 'Marcar como Pendente'
-      case 'PENDING':
-        return 'Marcar como Enviado'
-      case 'SENT':
-        return 'Marcar como Entregue'
-      default:
-        return ''
-    }
-  }
 
   const handleStatusUpdate = async (
     giftId: string,
