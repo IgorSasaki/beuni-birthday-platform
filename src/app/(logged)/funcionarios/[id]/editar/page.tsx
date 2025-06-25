@@ -1,10 +1,10 @@
 import { NextPage } from 'next'
 
-import { EmployeePageProps } from '../types'
 import { Container } from './_components/Container'
+import { EditEmployeePageProps } from './types'
 
-const Page: NextPage<EmployeePageProps> = ({ params }) => {
-  const { id } = params
+const Page: NextPage<EditEmployeePageProps> = async ({ params }) => {
+  const id = (await params).id
 
   return <Container id={id} />
 }
