@@ -17,10 +17,10 @@ export class Employee {
   ): Promise<AxiosResponse> {
     const { department, status, month } = filters
 
-    const cleanedFilters: BirthdayFilter = {
+    const cleanedFilters = {
       month:
-        typeof month === 'string' && month !== 'ALL'
-          ? parseInt(month, 10)
+        typeof month === 'number' && month >= 1 && month <= 12
+          ? month.toString()
           : undefined,
       department: department && department !== 'ALL' ? department : undefined,
       status: status && status !== 'ALL' ? status : undefined
@@ -55,6 +55,29 @@ export class Employee {
     token: string
   ): Promise<AxiosResponse> {
     return this.instance.post('/employees', payload, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+  }
+
+  public async deleteEmployee(
+    employeeId: string,
+    token: string
+  ): Promise<AxiosResponse> {
+    return this.instance.delete(`/employees/${employeeId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+  }
+
+  public async updateEmployee(
+    employeeId: string,
+    payload: EmployeeFormData,
+    token: string
+  ): Promise<AxiosResponse> {
+    return this.instance.put(`/employees/${employeeId}`, payload, {
       headers: {
         Authorization: `Bearer ${token}`
       }

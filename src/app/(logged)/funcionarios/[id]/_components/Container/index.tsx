@@ -40,7 +40,7 @@ export const Container: React.FC<ContainerProps> = ({ id }) => {
 
   return (
     <div className="space-y-8">
-      <Header employee={employee} />
+      <Header employee={employee} token={token} />
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">

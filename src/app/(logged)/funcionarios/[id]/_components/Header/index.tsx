@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 import {
   AlertDialog,
@@ -16,21 +17,42 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { internalAPIInstance } from '@/instances/internalAPI'
 import { getDepartmentLabel } from '@/utils/getters/getDepartmentLabel'
 import { getPositionLabel } from '@/utils/getters/getPositionLabel'
 
 import { HeaderProps } from './types'
 
-export const Header: React.FC<HeaderProps> = ({ employee }) => {
+export const Header: React.FC<HeaderProps> = ({ employee, token }) => {
   const router = useRouter()
+
+  const handleDelete = async () => {
+    try {
+      await internalAPIInstance.employee.deleteEmployee(
+        employee.employeeId,
+        token
+      )
+      toast.success('Funcionário removido', {
+        description: `${employee.fullName} foi removido do sistema`
+      })
+
+      router.push('/funcionarios')
+    } catch (error) {
+      console.error({ handleDeleteError: error })
+
+      toast.error('Erro ao remover funcionário', {
+        description: 'Não foi possível remover o funcionário'
+      })
+    }
+  }
 
   return (
     <motion.div
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center justify-between"
+      className="flex flex-col items-center justify-between space-y-2 lg:flex-row"
       initial={{ opacity: 0, y: 20 }}
     >
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-col items-center space-y-4 space-x-4 lg:flex-row lg:space-y-0">
         <Button
           className="hover:border-beuni-orange hover:bg-orange-50"
           onClick={() => router.back()}
@@ -88,7 +110,10 @@ export const Header: React.FC<HeaderProps> = ({ employee }) => {
 
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction className="bg-red-600 hover:bg-red-700">
+              <AlertDialogAction
+                className="bg-red-600 hover:bg-red-700"
+                onClick={handleDelete}
+              >
                 Excluir
               </AlertDialogAction>
             </AlertDialogFooter>
